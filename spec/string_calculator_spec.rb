@@ -4,12 +4,23 @@ require_relative '../string_calculator'
 
 describe StringCalculator do
   describe '.add' do
-    context 'method arguments' do
+    context 'when valid method arguments passed' do
       it 'expects only one string argument' do
-        expect { described_class.add('1') }.to_not raise_error
-        expect { described_class.add(1) }.to raise_error
-        expect { described_class.add(1, 2) }.to raise_error
-        expect { described_class.add('1', '2') }.to raise_error
+        expect { described_class.add('1') }.not_to raise_error(ArgumentError, 'Only single string argument is allowed.')
+      end
+    end
+
+    context 'when invalid method arguments passed' do
+      it 'raises error when single different argument type passed' do
+        expect { described_class.add(1) }.to raise_error(ArgumentError, 'Only single string argument is allowed.')
+      end
+
+      it 'raises error when multiple integers passed as argument' do
+        expect { described_class.add(1, 2) }.to raise_error(ArgumentError, /wrong number of arguments/)
+      end
+
+      it 'raises error when multiple string arguments passed' do
+        expect { described_class.add('1', '2') }.to raise_error(ArgumentError, /wrong number of arguments/)
       end
     end
 
@@ -22,7 +33,9 @@ describe StringCalculator do
     context 'when valid string with numbers' do
       it 'returns sum of passed numbers' do
         expect(described_class.add('1')).to eq 1
-        expect(described_class.add('1,2')).to eq 3
+      end
+
+      it 'sum all numbers if multiple comma separated numbers' do
         expect(described_class.add('1,2,3')).to eq 6
       end
     end
@@ -46,7 +59,7 @@ describe StringCalculator do
     end
 
     context 'when string has negative numbers' do
-      it 'should raise exception with message' do
+      it 'raises exception with message' do
         expect { described_class.add('-1,2,-3') }.to raise_error(RuntimeError, 'Negative numbers not allowed: -1,-3')
       end
 
