@@ -47,8 +47,12 @@ describe StringCalculator do
     end
 
     context 'when string contains invalid new line char' do
-      it "return error when invalid \n passed" do
+      it "return error when invalid \n passed at end" do
         expect(described_class.add("1,\n")).to eq 'Invalid input'
+      end
+
+      it "return error when invalid \n passed at beginning" do
+        expect(described_class.add("1,\n, 2")).to eq 'Invalid input'
       end
     end
 
@@ -58,13 +62,23 @@ describe StringCalculator do
       end
     end
 
+    context 'when string has different delimiter but uses comma' do
+      it 'throws invalid input error' do
+        expect(described_class.add("//;\n1;2,3")).to eq 'Invalid input'
+      end
+    end
+
     context 'when string has negative numbers' do
       it 'raises exception with message' do
         expect { described_class.add('-1,2,-3') }.to raise_error(RuntimeError, 'Negative numbers not allowed: -1,-3')
       end
 
+      it 'does raise an exception with negative number and different delimiter' do
+        expect { described_class.add("//;\n1;2;-3") }.to raise_error(RuntimeError, 'Negative numbers not allowed: -3')
+      end
+
       it 'does not raise an exception with correct data' do
-        expect { described_class.add('1,2,3') }.not_to raise_error
+        expect { described_class.add('//;\n1;2,3') }.not_to raise_error
       end
     end
   end

@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require 'pry'
+
+# This class is responsible to accept input as string of numbers
+# and outputs sum of those numbers
 class StringCalculator
   DEFAULT_DELIMITER = ','
 
@@ -15,9 +18,7 @@ class StringCalculator
     return 'Invalid input' unless elements_arr.all? { |element| valid?(element) }
 
     numbers_arr = elements_arr.map(&:to_i)
-    numbers_arr.each do |num|
-      raise "Negative numbers not allowed: #{negative_numbers(numbers_arr)}" if num.negative?
-    end
+    validate_negatives(numbers_arr)
     numbers_arr.sum
   end
 
@@ -35,5 +36,11 @@ class StringCalculator
 
   def self.negative_numbers(numbers)
     numbers.select(&:negative?).join(',')
+  end
+
+  def self.validate_negatives(numbers_arr)
+    numbers_arr.each do |num|
+      raise "Negative numbers not allowed: #{negative_numbers(numbers_arr)}" if num.negative?
+    end
   end
 end
