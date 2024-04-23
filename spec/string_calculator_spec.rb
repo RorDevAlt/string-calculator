@@ -39,8 +39,17 @@ describe StringCalculator do
 
     context "when string has different delimiter" do
       it "considers delimiter and sum number" do
-        "//[delimiter]\n[numbers…]"
         expect(described_class.add("//;\n1;2")).to eq 3
+      end
+    end
+
+    context "when string has negative numbers" do
+      it "should raise exception with message" do
+        expect { described_class.add("-1,2,-3") }.to raise_error(RuntimeError, "Negative numbers not allowed: -1,-3")
+      end
+
+      it 'does not raise an exception with correct data' do
+        expect { described_class.add("1,2,3") }.not_to raise_error
       end
     end
   end
